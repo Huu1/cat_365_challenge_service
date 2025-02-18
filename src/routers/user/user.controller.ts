@@ -4,7 +4,7 @@ import { IPayLoad } from '@app/shared/auth';
 import { UserService } from './user.service';
 import { User } from '@app/decorators/user.decorator';
 import { UseLoginAccessInterface, UsePublicInterface } from '@app/decorators/public.decorator';
-import { LoginCodeDto } from './user.dto';
+import { LoginCodeDto, RegisterUserDto } from './user.dto';
 import { LocationAxisParam, } from './user.param';
 
 @Controller('user')
@@ -43,14 +43,6 @@ export class UserController {
         // console.log('userInfo是',userInfo)
         const { id } = userInfo;
         return this.userService.queryUserProfile(id);
-    }
-
-    //根据经纬度获取用户信息的具体位置
-    @UseLoginAccessInterface()
-    @Post('location')
-    public getLocation(@User() userInfo: IPayLoad, @Body() locationAxisParam: LocationAxisParam) {
-        const { id } = userInfo;
-        return this.userService.queryCityApi(id, locationAxisParam);
     }
 
 }
