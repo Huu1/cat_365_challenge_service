@@ -6,11 +6,11 @@ import { UserListDto } from './user-manage.dto';
 import { RedisService } from '@app/shared/redis';
 import { User, Role, UserRole } from '@app/entities';
 import { IUserListResponse } from './user-manage.interface';
-import { USER_STATUS } from '@app/routers/user/user.constant';
+import { USER_STATUS } from '@app/modules/user/user.constant';
 import { FailException } from '@app/exceptions/fail.exception';
 import { ERROR_CODE } from '@app/constants/error-code.constant';
-import { IUserLoginCache } from '@app/routers/user/user.interface';
-import { userLoginCachePrefix } from '@app/routers/user/user.helper';
+import { IUserLoginCache } from '@app/modules/user/user.interface';
+import { userLoginCachePrefix } from '@app/modules/user/user.helper';
 
 @Injectable()
 export class UserManageService {

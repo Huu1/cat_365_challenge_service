@@ -29,6 +29,7 @@ export const mysqlProvider: Provider = {
             namingStrategy: snakeNamingStrategy, // 定义命名策略
 
             entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+            // entities: [__dirname + '/**/*.entity{.ts,.js}'],
 
             synchronize: true,
 

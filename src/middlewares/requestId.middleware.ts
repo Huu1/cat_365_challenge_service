@@ -15,6 +15,5 @@ declare module 'express' {
  */
 export const RequestIdMiddleware = (req: Request, res: Response, next: () => void) => {
     req.requestId = v4();
-
     next();
 };

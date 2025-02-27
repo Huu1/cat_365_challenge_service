@@ -6,11 +6,11 @@ import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 
 import { AuthService } from '@app/shared/auth';
 import { RedisService } from '@app/shared/redis';
-import { USER_ADMIN } from '@app/routers/user/user.constant';
+import { USER_ADMIN } from '@app/modules/user/user.constant';
 import { formatAuthorization } from '@app/helpers/utils.helper';
 import { validateUserRouterAuth } from '@app/helpers/guard.helper';
-import { IUserLoginCache } from '@app/routers/user/user.interface';
-import { userLoginCachePrefix } from '@app/routers/user/user.helper';
+import { IUserLoginCache } from '@app/modules/user/user.interface';
+import { userLoginCachePrefix } from '@app/modules/user/user.helper';
 import { IsLoginAccessInterface, IsPublicInterface } from '@app/helpers/reflector-validate.helper';
 // import { RoleManageService } from '@app/routers/manage/role-manage/role-manage.service';
 

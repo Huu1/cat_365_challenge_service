@@ -4,3 +4,7 @@ export { Access } from './access.entity';
 export { UserRole } from './user-role.entity';
 export { RoleAccess } from './role-access.entity';
 export { AccessCategory } from './access-category.entity';
+export { Account } from './account.entity';
+export { Record } from './record.entity';
+export { Category } from './category.entity';
+export { Book } from './book.entity';

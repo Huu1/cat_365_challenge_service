@@ -8,7 +8,7 @@ import { ERROR_CODE } from '@app/constants/error-code.constant';
 import { Access, AccessCategory, RoleAccess } from '@app/entities';
 import { IAccessCategoryResponse } from './access-manage.interface';
 import { AccessCategoryListDto, CreateAccessDto, ModifyAccessDto } from './access-manage.dto';
-import { AUTH_ROLE_ACCESS_RELATION_MAP } from '@app/routers/manage/role-manage/role-manage.constant';
+import { AUTH_ROLE_ACCESS_RELATION_MAP } from '@app/modules/manage/role-manage/role-manage.constant';
 
 @Injectable()
 export class AccessManageService {

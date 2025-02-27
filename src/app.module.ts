@@ -3,7 +3,7 @@ import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/c
 
 import * as configs from '@app/configs';
 import { SharedModule } from '@app/shared/shared.module';
-import { RoutersModule } from '@app/routers/routers.module';
+import { RoutersModule } from '@app/modules/routers.module';
 import { RequestLogMiddleware } from '@app/middlewares/request-log.middleware';
 
 @Module({

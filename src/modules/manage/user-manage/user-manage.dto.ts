@@ -1,7 +1,7 @@
 import { Transform, Type } from 'class-transformer';
 
 import { PaginationDto } from '@app/dtos/pagination.dto';
-import { USER_STATUS } from '@app/routers/user/user.constant';
+import { USER_STATUS } from '@app/modules/user/user.constant';
 import { IsDefined, IsIn, IsInt, IsNotEmpty, IsPositive, Length } from 'class-validator';
 
 // 查询用户列表

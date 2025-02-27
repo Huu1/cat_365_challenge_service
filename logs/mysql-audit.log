@@ -9,6 +9,16 @@
             "date": 1739875792247,
             "name": "logs/mysql.2025-02-18.log",
             "hash": "382c1573959c1d496903782828f35f337fc774aa034ea66e48fc012529525926"
+        },
+        {
+            "date": 1740479895988,
+            "name": "logs/mysql.2025-02-25.log",
+            "hash": "af68b95965e6e9bcb543c2dbd99785f8957a3c1867e779cfc7d1668c4dfe5431"
+        },
+        {
+            "date": 1740654410314,
+            "name": "logs/mysql.2025-02-27.log",
+            "hash": "11d40d32077f158233d323ee1938e9b92928a46e6839e8568865d40e133cf6dd"
         }
     ],
     "hashType": "sha256"

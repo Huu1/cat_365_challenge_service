@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
-import { IUserLoginCache } from '@app/routers/user/user.interface';
-import { IRoleAccessMap, IRoleAccessInfo } from '@app/routers/manage/role-manage/role-manage.interface';
+import { IUserLoginCache } from '@app/modules/user/user.interface';
+import { IRoleAccessMap, IRoleAccessInfo } from '@app/modules/manage/role-manage/role-manage.interface';
 
 // 路由处理正则
 const ROUTER_REG_EXP = new RegExp(/(.*):[^/]+(.*)/g);
