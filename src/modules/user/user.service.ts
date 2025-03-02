@@ -187,7 +187,6 @@ export class UserService {
         "email",
         "avatar",
         "gender",
-        "admin",
         "status",
       ],
       where: { id: userId },

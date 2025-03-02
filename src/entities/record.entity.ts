@@ -9,6 +9,8 @@ import { IncomeandExpense } from '@app/constants/enum';
 @Entity()
 @Index(['book', 'date']) // 复合索引
 @Index(['type'])
+@Index(['bookId', 'date', 'type'])  // 复合索引
+
 export class Record extends TimeEntityBase {
   @PrimaryGeneratedColumn()
   id: number;

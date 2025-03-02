@@ -52,17 +52,8 @@ export class User extends TimeEntityBase {
 
   @Column("varchar", { nullable: true, length: 200, comment: "avatar" })
   avatar: string;
-
   @Column("tinyint", { nullable: false, default: 0, comment: "gender" })
   gender: number;
-
-  @Column("tinyint", {
-    unsigned: true,
-    nullable: false,
-    default: USER_ADMIN.NORMAL,
-    comment: "admin",
-  })
-  admin: USER_ADMIN;
 
   @OneToMany(() => Book, book => book.user)
   books: Book[];

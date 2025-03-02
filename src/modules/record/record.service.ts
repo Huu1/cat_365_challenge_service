@@ -148,6 +148,9 @@ export class RecordService {
       manager.findOneBy(Category, { id: dto.categoryId, user: { id: userId } }),
     ]);
 
+    console.log([book, account, category]);
+    
+
     if (!book || !account || !category)
       throw new FailException(ERROR_CODE.COMMON.RECORD_NOT_EXISTS);
   }
