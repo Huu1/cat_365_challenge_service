@@ -15,9 +15,9 @@ import { FailException } from "@app/exceptions/fail.exception";
 import { ERROR_CODE } from "@app/constants/error-code.constant";
 
 interface AssetSummary {
-  totalAssets: number;    // 总资产 = 资金 + 理财 + 应收
+  totalAssets: number; // 总资产 = 资金 + 理财 + 应收
   totalLiabilities: number; // 总负债 = 信用 + 应付
-  netWorth: number;       // 净资产 = 总资产 - 总负债
+  netWorth: number; // 净资产 = 总资产 - 总负债
   breakdown: {
     [key in AccountType]: number;
   };
@@ -83,64 +83,46 @@ export class AccountService {
     });
   }
 
-  // 更新用户账户（禁止修改类型）
-  async updateAccount(
-    userId: number,
-    accountId: number,
-    dto: UpdateAccountDto
-  ) {
-    const account = await this.accountRepo.findOneByOrFail({
-      id: accountId,
-      user: { id: userId },
-      isSystem: false,
-    });
-
-    if (dto.type && dto.type !== account.type) {
-      throw new FailException(ERROR_CODE.COMMON.RESTRICTED_PERMISSIONS);
-    }
-
-    return this.accountRepo.save({
-      ...account,
-      ...dto,
-    });
-  }
-
   // 获取总资产
-  async getAssetSummary(userId: number): Promise<AssetSummary> {
+  async getSummarys(userId: number) {
     const accounts = await this.accountRepo.find({
-      where: { user: { id: userId } }
+      where: { user: { id: userId } },
     });
-  
+
     const typeMap = {
-      [AccountType.CASH]: 'asset',
-      [AccountType.INVESTMENT]: 'asset',
-      [AccountType.RECEIVABLE]: 'asset',
-      [AccountType.CREDIT]: 'liability',
-      [AccountType.PAYABLE]: 'liability'
+      [AccountType.CASH]: "asset",
+      [AccountType.INVESTMENT]: "asset",
+      [AccountType.RECEIVABLE]: "asset",
+      [AccountType.CREDIT]: "liability",
+      [AccountType.PAYABLE]: "liability",
     };
-  
-    const summary = accounts.reduce((acc, account) => {
-      const category = typeMap[account.type];
-      const amount = Number(account.balance);
-  
-      acc.breakdown[account.type] = (acc.breakdown[account.type] || 0) + amount;
-      
-      if (category === 'asset') {
-        acc.totalAssets += amount;
-      } else {
-        acc.totalLiabilities += Math.abs(amount); // 负债金额取正值
+
+    const summary = accounts.reduce(
+      (acc, account) => {
+        const category = typeMap[account.type];
+        const amount = Number(account.balance);
+
+        acc.breakdown[account.type] =
+          (acc.breakdown[account.type] || 0) + amount;
+
+        if (category === "asset") {
+          acc.totalAssets += amount;
+        } else {
+          acc.totalLiabilities += Math.abs(amount); // 负债金额取正值
+        }
+
+        return acc;
+      },
+      {
+        totalAssets: 0,
+        totalLiabilities: 0,
+        breakdown: {} as Record<AccountType, number>,
       }
-      
-      return acc;
-    }, {
-      totalAssets: 0,
-      totalLiabilities: 0,
-      breakdown: {} as Record<AccountType, number>
-    });
-  
+    );
+
     return {
       ...summary,
-      netWorth: summary.totalAssets - summary.totalLiabilities
+      netWorth: summary.totalAssets - summary.totalLiabilities,
     };
   }
 
@@ -216,5 +198,27 @@ export class AccountService {
         balance: 0,
       }))
     );
+  }
+
+  // 更新用户账户（禁止修改类型）
+  async updateUserAccount(
+    accountId: number,
+    userId: number,
+    dto: UpdateAccountDto
+  ) {
+    const account = await this.accountRepo.findOne({
+      where: { isSystem: false, user: { id: userId }, id: accountId },
+    });
+
+    if (!account) {
+      throw new FailException(ERROR_CODE.COMMON.RECORD_NOT_EXISTS);
+    }
+
+    return this.accountRepo.save({
+      ...account,
+      ...dto,
+      // 禁止修改账户类型
+      type: account.type,
+    });
   }
 }

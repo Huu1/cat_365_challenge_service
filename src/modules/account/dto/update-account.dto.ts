@@ -1,16 +1,17 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { CreateAccountDto } from "./create-account.dto";
-import { IsBoolean, IsInt, IsOptional, IsString, Length } from "class-validator";
+import { IsBoolean, IsInt, IsNumber, IsOptional, IsPositive, IsString, Length } from "class-validator";
 import { AccountType } from "@app/constants/enum";
 
 export class UpdateAccountDto extends PartialType(CreateAccountDto) {
 
-  @IsInt()
-  balance: number;
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @IsPositive()
+  balance?: number;
 
   @IsOptional()
   @Length(2, 20)
-  name: string;
+  name?: string;
 
   @IsOptional()
   @IsBoolean()
@@ -27,8 +28,6 @@ export class UpdateAccountDto extends PartialType(CreateAccountDto) {
   @IsOptional()
   icon?: string;
 
-  @IsOptional()
-  type?: AccountType;
 }
 
 

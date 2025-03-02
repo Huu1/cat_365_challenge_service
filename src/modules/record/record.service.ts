@@ -1,10 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { CreateRecordDto } from "./dto/create-record.dto";
+import { CreateRecordDto, QueryRecordsDto } from "./dto/create-record.dto";
 import { UpdateRecordDto } from "./dto/update-record.dto";
 import { Account, Book, Category, Record } from "@app/entities";
 import { DataSource, EntityManager, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { IncomeandExpense } from "@app/constants/enum";
+import { IncomeandExpense, PaginatedResult } from "@app/constants/enum";
+import { FailException } from "@app/exceptions/fail.exception";
+import { ERROR_CODE } from "@app/constants/error-code.constant";
 
 @Injectable()
 export class RecordService {
@@ -17,8 +19,9 @@ export class RecordService {
   ) {}
 
   // 创建记录并更新账户余额
-  async create(dto: CreateRecordDto): Promise<Record> {
+  async create(dto: CreateRecordDto, userId: number): Promise<Record> {
     return this.dataSource.transaction(async (manager) => {
+      await this.validateRelationsExist(manager, dto, userId);
       const record = await this.createRecord(manager, dto);
       await this.updateAccountBalance(
         manager,
@@ -127,17 +130,75 @@ export class RecordService {
     const value = type === IncomeandExpense.income ? amount : -amount;
     const multiplier = operation === "revert" ? -1 : 1;
 
-    console.log(
-      account,
-      value,
-      multiplier,
-      account.balance + value * multiplier
-    );
-
     account.balance = Number(
       (Number(account.balance) + value * multiplier).toFixed(2)
     );
 
     await manager.save(Account, account);
+  }
+
+  private async validateRelationsExist(
+    manager: EntityManager,
+    dto: CreateRecordDto,
+    userId: number
+  ) {
+    const [book, account, category] = await Promise.all([
+      manager.findOneBy(Book, { id: dto.bookId, user: { id: userId } }),
+      manager.findOneBy(Account, { id: dto.accountId, user: { id: userId } }),
+      manager.findOneBy(Category, { id: dto.categoryId, user: { id: userId } }),
+    ]);
+
+    if (!book || !account || !category)
+      throw new FailException(ERROR_CODE.COMMON.RECORD_NOT_EXISTS);
+  }
+
+  // src/modules/record/record.service.ts
+  async getUserRecords(
+    userId: number,
+    query: QueryRecordsDto
+  ): Promise<PaginatedResult<Record>> {
+    const { type, startDate, endDate, page = 1, pageSize = 10 } = query;
+
+    const queryBuilder = this.recordRepo
+      .createQueryBuilder("record")
+      .leftJoinAndSelect("record.account", "account")
+      .leftJoinAndSelect("record.category", "category")
+      .innerJoin("record.book", "book")
+      .where("book.user_id = :userId", { userId })
+      .orderBy("record.date", "DESC")
+      .addOrderBy("record.createdAt", "DESC");
+
+    // 类型过滤
+    if (type) {
+      queryBuilder.andWhere("record.type = :type", { type });
+    }
+
+    // 日期范围过滤
+    if (startDate) {
+      queryBuilder.andWhere("record.date >= :startDate", {
+        startDate: new Date(startDate),
+      });
+    }
+    if (endDate) {
+      queryBuilder.andWhere("record.date <= :endDate", {
+        endDate: new Date(endDate),
+      });
+    }
+
+    // 分页处理
+    const [items, total] = await queryBuilder
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    return {
+      data: items,
+      pagination: {
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    };
   }
 }

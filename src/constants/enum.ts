@@ -19,3 +19,15 @@ export const AccounttypeMap = {
   [AccountType.CREDIT]: 'liability',
   [AccountType.PAYABLE]: 'liability'
 };
+
+
+// src/common/types/pagination.type.ts
+export interface PaginatedResult<T> {
+  data: T[];
+  pagination: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}

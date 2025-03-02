@@ -4,6 +4,7 @@ import {
   IsDecimal,
   IsEnum,
   IsISO8601,
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -11,6 +12,9 @@ import {
   IsPositive,
   IsString,
   Length,
+  Max,
+  Min,
+  ValidateIf,
   isInt,
 } from "class-validator";
 
@@ -44,4 +48,36 @@ export class CreateRecordDto {
   @IsEnum(IncomeandExpense)
   @IsNotEmpty()
   type: IncomeandExpense; // 必须指定类型
+}
+
+
+// src/modules/record/dto/query-records.dto.ts
+export class QueryRecordsDto {
+  @IsInt()
+  @IsIn([1, 2])
+  @Type(() => Number) // 自动转换类型
+  @IsOptional()
+  type?: 1 | 2;
+
+  @IsISO8601()
+  @IsOptional()
+  startDate?: string;
+
+  @IsISO8601()
+  @IsOptional()
+  @ValidateIf(o => o.startDate) // endDate 需要 startDate 存在
+  endDate?: string;
+
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  @Type(() => Number)
+  page?: number = 1;
+
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  @IsOptional()
+  @Type(() => Number)
+  pageSize?: number = 10;
 }

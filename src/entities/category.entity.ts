@@ -26,7 +26,12 @@ export class Category extends TimeEntityBase {
   })
   name: string;
 
-  @Column({ nullable: true, comment: "图标名称或URL" }) // 新增图标字段
+  @Column({
+    type: "varchar",
+    length: 100,
+    nullable: false, // 明确禁止空值
+    default: "", // 设置空字符串兜底
+  })
   icon: string;
 
   @Column({

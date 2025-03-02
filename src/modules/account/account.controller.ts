@@ -30,6 +30,7 @@ export class AccountController {
     return this.accountService.getAvailableTemplates();
   }
 
+  // 获取用户账户
   @Get()
   async getAllAccounts(@User() user: IPayLoad) {
     return this.accountService.getUserAccounts(user.id);
@@ -39,6 +40,16 @@ export class AccountController {
   @Post("add")
   async createAccount(@User() user: IPayLoad, @Body() dto: CreateAccountDto) {
     return this.accountService.createFromTemplate(user.id, dto);
+  }
+
+  // 更新用户账户
+  @Post("update/:id")
+  async updateUserAccount(
+    @Param("id", ParseIntPipe) accountId: number,
+    @User() user: IPayLoad,
+    @Body() dto: UpdateAccountDto
+  ) {
+    return this.accountService.updateUserAccount(accountId,user.id, dto);
   }
 
   // 移除用户账户
@@ -67,8 +78,8 @@ export class AccountController {
 
   // 获取资产详情
   @Get("summary")
-  getSummary(@User() user: IPayLoad) {
-    return this.accountService.getAssetSummary(user.id);
+  async getSummarys(@User() user: IPayLoad) {
+    return this.accountService.getSummarys(user.id);
   }
 
   @Post("init")
