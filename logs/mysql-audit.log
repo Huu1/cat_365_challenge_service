@@ -19,6 +19,21 @@
             "date": 1740654410314,
             "name": "logs/mysql.2025-02-27.log",
             "hash": "11d40d32077f158233d323ee1938e9b92928a46e6839e8568865d40e133cf6dd"
+        },
+        {
+            "date": 1740750999674,
+            "name": "logs/mysql.2025-02-28.log",
+            "hash": "e585cebbabfb61ac41e148f303afcd630a833a994a1e5de4f5020e74d96dbc76"
+        },
+        {
+            "date": 1740758668434,
+            "name": "logs/mysql.2025-03-01.log",
+            "hash": "9650a9b41e2a4ef9e2d3e407c7aa4c8dad3162a61d7f33040e18ce586cb2c1c3"
+        },
+        {
+            "date": 1740879613870,
+            "name": "logs/mysql.2025-03-02.log",
+            "hash": "2fbeee34d87a5d9997073dc4153d4dc86da53b962869b5e7f0681256919b9efb"
         }
     ],
     "hashType": "sha256"

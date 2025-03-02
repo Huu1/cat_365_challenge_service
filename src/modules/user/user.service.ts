@@ -28,12 +28,14 @@ import {
 } from "./user.interface";
 import { RESPONSE_DEFAULT_TEXT } from "@app/constants/http.constant";
 import { lastValueFrom } from "rxjs";
+import { BookService } from "../book/book.service";
 
 @Injectable()
 export class UserService {
   public constructor(
     private http: HttpService,
     private redisService: RedisService,
+    private bookService: BookService,
     private configService: ConfigService,
     // private emailerService: EmailerService,
     private authService: AuthService,
@@ -71,6 +73,9 @@ export class UserService {
       openid,
     });
     await this.userRepository.save(user);
+
+    await this.bookService.createDefaultBook(user); // 注册时创建
+
     // 删除掉指定的验证缓存
     // await this.redisService.delete(emailHandle);
 

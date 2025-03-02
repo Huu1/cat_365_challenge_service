@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, DeleteDateColumn } from "typeorm";
 
 import { getCurrentTime } from "@app/helpers/utils.helper";
 
@@ -17,4 +17,7 @@ export abstract class TimeEntityBase {
     nullable: false,
   })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: Date | null;
 }

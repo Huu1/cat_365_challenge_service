@@ -1,34 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { RecordService } from './record.service';
-import { CreateRecordDto } from './dto/create-record.dto';
-import { UpdateRecordDto } from './dto/update-record.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  Query,
+} from "@nestjs/common";
+import { RecordService } from "./record.service";
+import { CreateRecordDto } from "./dto/create-record.dto";
+import { UpdateRecordDto } from "./dto/update-record.dto";
 
-@Controller('record')
+@Controller("record")
 export class RecordController {
-  constructor(private readonly recordService: RecordService) {}
+  constructor(private readonly service: RecordService) {}
 
-  @Post()
-  create(@Body() createRecordDto: CreateRecordDto) {
-    return this.recordService.create(createRecordDto);
+  @Post('new')
+  create(@Body() dto: CreateRecordDto) {
+    return this.service.create(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.recordService.findAll();
+  @Get(":id")
+  get(@Param("id") id: string) {
+    return this.service.findOne(+id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.recordService.findOne(+id);
+  @Post("update/:id")
+  update(@Param("id") id: string, @Body() dto: UpdateRecordDto) {
+    return this.service.update(+id, dto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRecordDto: UpdateRecordDto) {
-    return this.recordService.update(+id, updateRecordDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.recordService.remove(+id);
+  @Post("remove/:id")
+  delete(@Param("id") id: string) {
+    return this.service.delete(+id);
   }
 }

@@ -53,8 +53,12 @@ export class CategoryController {
   // 删除分类
   @Post("delete/:id")
   deleteCategory(@Param("id") id: string, @User() user: IPayLoad) {
-    console.log(id,user);
-    
     return this.categoryService.deleteCategory(+id, user.id);
+  }
+
+
+  @Post('init')
+  async seedSystemAccounts() {
+    return this.categoryService.seedDefaultCategories();
   }
 }

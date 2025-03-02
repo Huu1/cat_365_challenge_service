@@ -3,6 +3,7 @@ enum COMMON {
     RECORD_EXITS = 900102, // 记录已存在
     RECORD_NOT_EXISTS = 900103, // 记录不存在
     RESTRICTED_PERMISSIONS = 900104, //权限受限
+    RECORD_ISRELATIVE = 900105, //有关联记录
 }
 
 // 服务器错误

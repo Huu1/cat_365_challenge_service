@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from "typeorm";
 import { TimeEntityBase } from "./lib/time-entity-base";
 import { User } from "./user.entity";
@@ -17,7 +18,12 @@ export class Category extends TimeEntityBase {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    length: 20,
+    nullable: false, // 明确禁止空值
+    default: "", // 设置空字符串兜底
+  })
   name: string;
 
   @Column({ nullable: true, comment: "图标名称或URL" }) // 新增图标字段
@@ -30,8 +36,12 @@ export class Category extends TimeEntityBase {
   })
   type: IncomeandExpense; // 新增类型字段
 
-  @ManyToOne(() => User, (user) => user.categories, { nullable: true })
-  user: User | null; // 用户自定义分类，可能为空
+  // Category.user 应明确设置级联操作
+  @ManyToOne(() => User, (user) => user.categories, {
+    nullable: true,
+    onDelete: "CASCADE", // 用户删除时处理分类
+  })
+  user: User | null;
 
   @Column({ default: false })
   isDefault: boolean; // 标记是否为默认分类

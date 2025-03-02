@@ -16,11 +16,11 @@ export class CreateCategoryDto {
 export class UpdateCategoryDto {
   @IsOptional()
   @Length(2, 20)
-  name?: string;
+  name: string;
 
   @IsOptional()
   @IsEnum(IncomeandExpense)
-  type?: IncomeandExpense;
+  type: IncomeandExpense;
 
   @IsOptional()
   @IsString()

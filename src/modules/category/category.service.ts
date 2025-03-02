@@ -35,7 +35,7 @@ export const DEFAULT_CATEGORIES = [
 ];
 
 @Injectable()
-export class CategoryService  {
+export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private categoryRepo: Repository<Category>
@@ -64,24 +64,26 @@ export class CategoryService  {
     return category;
   }
 
-  // private async seedDefaultCategories() {
-  //   for (const catData of DEFAULT_CATEGORIES) {
-  //     const exists = await this.categoryRepo.findOne({
-  //       where: {
-  //         name: catData.name,
-  //         isDefault: true,
-  //       },
-  //     });
-  //     if (exists===null) {
-  //       await this.categoryRepo.save(
-  //         this.categoryRepo.create({
-  //           ...catData,
-  //           user: null, // 系统分类无归属用户
-  //         })
-  //       );
-  //     }
-  //   }
-  // }
+  // 修改后的初始化方法
+  async seedDefaultCategories() {
+    const existingCount = await this.categoryRepo.count({
+      where: { isDefault: true },
+    });
+
+    // 如果已有默认分类则跳过初始化
+    if (existingCount > 0) return;
+
+    // 使用事务批量插入
+    await this.categoryRepo.manager.transaction(async (manager) => {
+      await manager.insert(
+        Category,
+        DEFAULT_CATEGORIES.map((cat) => ({
+          ...cat,
+          user: null, // 明确系统分类无归属用户
+        }))
+      );
+    });
+  }
 
   // 创建用户自定义分类
   async createUserCategory(userId: number, dto: CreateCategoryDto) {
@@ -91,7 +93,7 @@ export class CategoryService  {
         user: { id: userId },
       },
     });
-    
+
     if (isHad) {
       throw new FailException(ERROR_CODE.COMMON.RECORD_EXITS);
     }
@@ -104,12 +106,10 @@ export class CategoryService  {
 
   // 删除分类（系统分类不可删）
   async deleteCategory(categoryId: number, uid: number) {
-    
     const category = await this.categoryRepo.findOne({
       where: { id: categoryId, user: { id: uid } },
       relations: ["records"],
     });
-    
 
     if (!category) throw new FailException(ERROR_CODE.COMMON.RECORD_NOT_EXISTS);
 
@@ -120,7 +120,7 @@ export class CategoryService  {
       throw new FailException(ERROR_CODE.COMMON.RESTRICTED_PERMISSIONS);
     }
 
-    return this.categoryRepo.delete(categoryId);
+    return this.categoryRepo.softDelete(categoryId);
   }
 
   // 获取分类时按类型过滤
